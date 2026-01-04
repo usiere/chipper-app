@@ -14,11 +14,37 @@ await postsStore.fetchPosts()
 if (!user.isGuest) {
   await favoritesStore.fetchFavorites()
 }
+
+let pollInterval = null
+
+onMounted(() => {
+  // Poll every 30 seconds
+  pollInterval = setInterval(() => {
+    postsStore.checkForNewPosts()
+  }, 30000)
+})
+
+onUnmounted(() => {
+  if (pollInterval) {
+    clearInterval(pollInterval)
+  }
+})
 </script>
 
 <template>
   <PostForm
     v-if="!user.isGuest" />
+
+  <!-- Load New Posts Button -->
+  <div v-if="postsStore.hasNewPosts" class="text-center mb-4">
+    <button
+      @click="postsStore.loadNewPosts()"
+      class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+    >
+      Load New Posts ({{ postsStore.newPosts.length }})
+    </button>
+  </div>
+
   <div v-if="postsStore.loading && !postsStore.posts.length" class="text-center py-8">
     Loading posts...
   </div>
