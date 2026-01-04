@@ -18,9 +18,7 @@ defineProps({
       <div>
         by <strong>{{ post.user.name }}</strong>
       </div>
-      <button class="font-medium bg-blue-200 text-sm px-2 rounded-full">
-        Follow
-      </button>
+      <FollowButton :user="post.user" />
     </div>
     <p>
       {{ post.body }}

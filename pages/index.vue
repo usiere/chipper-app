@@ -5,9 +5,15 @@ definePageMeta({
 
 const user = useUser()
 const postsStore = usePosts()
+const favoritesStore = useFavorites()
 
 // Fetch posts on page load
 await postsStore.fetchPosts()
+
+// Fetch favorites if user is authenticated
+if (!user.isGuest) {
+  await favoritesStore.fetchFavorites()
+}
 </script>
 
 <template>
