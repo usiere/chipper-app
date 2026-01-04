@@ -29,7 +29,16 @@ export const usePosts = defineStore('posts', () => {
     error.value = null
 
     try {
-      const response = await $api.post('/posts', postData)
+      const config = {}
+
+      // If postData is FormData, set appropriate headers
+      if (postData instanceof FormData) {
+        config.headers = {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+
+      const response = await $api.post('/posts', postData, config)
       data.value.unshift(response.data)
       return response.data
     } catch (e) {

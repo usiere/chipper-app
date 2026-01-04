@@ -3,8 +3,13 @@ const postsStore = usePosts()
 
 const title = ref('')
 const body = ref('')
+const imageFile = ref(null)
 const loading = ref(false)
 const error = ref(null)
+
+function handleFileChange(event) {
+  imageFile.value = event.target.files[0]
+}
 
 async function submit() {
   if (!title.value.trim() || !body.value.trim()) return
@@ -13,14 +18,23 @@ async function submit() {
   error.value = null
 
   try {
-    await postsStore.createPost({
-      title: title.value,
-      body: body.value
-    })
+    const formData = new FormData()
+    formData.append('title', title.value)
+    formData.append('body', body.value)
+
+    if (imageFile.value) {
+      formData.append('image', imageFile.value)
+    }
+
+    await postsStore.createPost(formData)
 
     // Clear form on success
     title.value = ''
     body.value = ''
+    imageFile.value = null
+    // Clear file input
+    const fileInput = document.querySelector('input[type="file"]')
+    if (fileInput) fileInput.value = ''
   } catch (e) {
     error.value = e.response?.data?.message || 'Failed to create post'
   } finally {
@@ -46,6 +60,12 @@ async function submit() {
       placeholder="What is happening?!"
       :disabled="loading"
       class="block w-full rounded-lg border border-gray-400 px-5 py-4 text-sm focus:border-blue-500 focus:outline-none md:text-base disabled:opacity-50"></textarea>
+    <input
+      type="file"
+      accept="image/*"
+      @change="handleFileChange"
+      :disabled="loading"
+      class="block w-full rounded-lg border border-gray-400 px-5 py-4 text-sm focus:border-blue-500 focus:outline-none md:text-base disabled:opacity-50">
     <button
       type="submit"
       :disabled="loading || !title.trim() || !body.trim()"

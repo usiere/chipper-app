@@ -21,6 +21,13 @@ defineProps({
     <p>
       {{ post.body }}
     </p>
+    <!-- Display image if present -->
+    <img
+      v-if="post.image_url"
+      :src="post.image_url"
+      :alt="post.title"
+      class="w-full max-w-md rounded-lg shadow-md"
+    />
     <FavoritePostButton :post="post" />
   </div>
 </template>
