@@ -1,6 +1,4 @@
 <script setup>
-import { HeartIcon } from '@heroicons/vue/24/outline'
-
 defineProps({
   post: {
     type: Object,
@@ -18,19 +16,18 @@ defineProps({
       <div>
         by <strong>{{ post.user.name }}</strong>
       </div>
-      <button class="font-medium bg-blue-200 text-sm px-2 rounded-full">
-        Follow
-      </button>
+      <FollowButton :user="post.user" />
     </div>
     <p>
       {{ post.body }}
     </p>
-    <button class="bg-red-200 text-red-500 flex items-center justify-center gap-2 p-4 rounded-lg">
-      <HeartIcon
-        class="h-6 stroke-current" />
-      <span class="font-bold">
-        Add to my favorites
-      </span>
-    </button>
+    <!-- Display image if present -->
+    <img
+      v-if="post.image_url"
+      :src="post.image_url"
+      :alt="post.title"
+      class="w-full max-w-md rounded-lg shadow-md"
+    />
+    <FavoritePostButton :post="post" />
   </div>
 </template>
